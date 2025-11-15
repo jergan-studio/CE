@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -33,10 +33,9 @@
   <iframe id="preview"></iframe>
 
   <script>
-// Commands notice
-alert("THIS SCRIPTING LANGUAGE IS 'commands' — A COMBINATION OF HTML, CSS, AND JAVASCRIPT");
+// CE Commands Notice
+console.log("Commands enabled: a combination of HTML, CSS, and JavaScript.");
 
-// Convert Commands → HTML/CSS/JS
 function convertToCommands() {
     const code = document.getElementById('commands').value;
     document.getElementById('html').value = code;
@@ -44,7 +43,6 @@ function convertToCommands() {
     document.getElementById('js').value = "";
 }
 
-// Run Preview
 function runPreview() {
     const html = document.getElementById('html').value;
     const css = document.getElementById('css').value;
@@ -52,7 +50,7 @@ function runPreview() {
     const iframe = document.getElementById('preview');
 
     const blob = new Blob([
-        `<!DOCTYPE html><html><head><style>${css}</style></head><body>${html}<script>${js}<\/script></body></html>`
+        `<!DOCTYPE html><html><head><style>${css}</style></head><body>${html}<script>${js}<\\/script></body></html>`
     ], { type: 'text/html' });
 
     iframe.src = URL.createObjectURL(blob);
