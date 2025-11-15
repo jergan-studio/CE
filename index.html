@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CE - Command Executor</title>
+  <style>
+    body {
+      margin: 0;
+      background: #0a0a0a;
+      color: white;
+      font-family: sans-serif;
+      display: flex;
+      height: 100vh;
+    }
+
+    .editor-area {
+      width: 40%;
+      background: #111;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 33%;
+      background: #222;
+      color: #0f0;
+      border: none;
+      padding: 8px;
+      font-family: monospace;
+      font-size: 14px;
+      resize: none;
+    }
+
+    iframe {
+      width: 60%;
+      height: 100%;
+      border: none;
+      background: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="editor-area">
+    <h2>CE – Command Executor</h2>
+    <textarea id="html" placeholder="HTML here..."></textarea>
+    <textarea id="css" placeholder="CSS here..."></textarea>
+    <textarea id="js" placeholder="JavaScript here..."></textarea>
+    <button id="run" style="padding:10px;background:#00b300;border:none;color:white;">Run</button>
+  </div>
+
+  <iframe id="preview"></iframe>
+
+  <script>
+    document.getElementById("run").onclick = () => {
+      const html = document.getElementById("html").value;
+      const css = `<style>${document.getElementById("css").value}</style>`;
+      const js = `<script>${document.getElementById("js").value}<\/script>`;
+
+      const output = html + css + js;
+
+      const frame = document.getElementById("preview").contentWindow.document;
+      frame.open();
+      frame.write(output);
+      frame.close();
+    };
+  </script>
+</body>
+</html>
