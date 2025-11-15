@@ -55,14 +55,7 @@ function runPreview() {
 
     iframe.src = URL.createObjectURL(blob);
 }
-</script>`;
-
-      document.getElementById('html').value = code;
-      document.getElementById('css').value = "";
-      document.getElementById('js').value = "";
-    };
-
-    function parseCommands(code) {
+function parseCommands(code) {
       let html = code.match(/<html>([\s\S]*?)<\/html>/)?.[1] || "";
       let css = code.match(/<style>([\s\S]*?)<\/style>/)?.[1] || "";
       let js = code.match(/<script>([\s\S]*?)<\/script>/)?.[1] || "";
