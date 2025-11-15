@@ -3,70 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CE - Command Executor</title>
+  <title>CE - Command Executor (Full Version)</title>
   <style>
-    body {
-      margin: 0;
-      background: #0a0a0a;
-      color: white;
-      font-family: sans-serif;
-      display: flex;
-      height: 100vh;
-    }
-
-    .editor-area {
-      width: 40%;
-      background: #111;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    textarea {
-      width: 100%;
-      height: 33%;
-      background: #222;
-      color: #0f0;
-      border: none;
-      padding: 8px;
-      font-family: monospace;
-      font-size: 14px;
-      resize: none;
-    }
-
-    iframe {
-      width: 60%;
-      height: 100%;
-      border: none;
-      background: white;
-    }
+    body { margin: 0; background: #0a0a0a; color: white; font-family: sans-serif; display: flex; height: 100vh; }
+    .sidebar { width: 40%; background: #111; padding: 10px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+    textarea { width: 100%; height: 28%; background: #222; color: #0f0; border: none; padding: 8px; font-family: monospace; font-size: 14px; resize: none; }
+    iframe { width: 60%; height: 100%; border: none; background: white; }
+    input { width: 100%; padding: 8px; background: #222; color: #0f0; border: none; font-family: monospace; margin-bottom: 5px; }
+    button { padding: 10px; background: #00b300; border: none; color: white; cursor: pointer; }
   </style>
 </head>
 <body>
-  <div class="editor-area">
-    <h2>CE – Command Executor</h2>
+  <div class="sidebar">
+    <h2>CE – Command Executor (Full)</h2>
+
+    <label>Project ID (auto loads):</label>
+    <input id="projectId" placeholder="example: abc123" />
+
     <textarea id="html" placeholder="HTML here..."></textarea>
     <textarea id="css" placeholder="CSS here..."></textarea>
     <textarea id="js" placeholder="JavaScript here..."></textarea>
-    <button id="run" style="padding:10px;background:#00b300;border:none;color:white;">Run</button>
+
+    <button id="run">Run</button>
+    <button id="save">Save (Generate URL)</button>
+
+    <p id="urlDisplay"></p>
   </div>
 
   <iframe id="preview"></iframe>
 
   <script>
-    document.getElementById("run").onclick = () => {
+    function runPreview() {
       const html = document.getElementById("html").value;
       const css = `<style>${document.getElementById("css").value}</style>`;
       const js = `<script>${document.getElementById("js").value}<\/script>`;
-
-      const output = html + css + js;
-
       const frame = document.getElementById("preview").contentWindow.document;
       frame.open();
-      frame.write(output);
+      frame.write(html + css + js);
       frame.close();
-    };
+    }
+
+    document.getElementById("run").onclick = runPreview;
+
+    function saveProject() {
+      const id = Math.random().toString(36).slice(2, 10);
+      const data = {
+        html: document.getElementById("html").value,
+        css: document.getElementById("css").value,
+        js: document.getElementById("js").value
+      };
+      localStorage.setItem("CE_" + id, JSON.stringify(data));
+      const url = window.location.origin + "?id=" + id;
+      document.getElementById("urlDisplay").innerText = "Saved URL: " + url;
+      window.history.replaceState(null, "", `?id=${id}`);
+    }
+
+    document.getElementById("save").onclick = saveProject;
+
+    function loadProject(id) {
+      const saved = localStorage.getItem("CE_" + id);
+      if (!saved) return;
+      const obj = JSON.parse(saved);
+      document.getElementById("html").value = obj.html;
+      document.getElementById("css").value = obj.css;
+      document.getElementById("js").value = obj.js;
+      runPreview();
+    }
+
+    const urlId = new URLSearchParams(window.location.search).get("id");
+    if (urlId) {
+      document.getElementById("projectId").value = urlId;
+      loadProject(urlId);
+    }
   </script>
 </body>
 </html>
