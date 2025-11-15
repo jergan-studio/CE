@@ -43,49 +43,49 @@
       frame.close();
     }
 
-    document.getElementById("run").onclick = runPreview;
-
-    function saveProject() {
-      const id = Math.random().toString(36).slice(2, 10);
-      const data = {
-        html: document.getElementById("html").value,
-        css: document.getElementById("css").value,
-        js: document.getElementById("js").value
-      };
-      localStorage.setItem("CE_" + id, JSON.stringify(data));
-      const url = window.location.origin + "?id=" + id;
-      document.getElementById("urlDisplay").innerText = "Saved URL: " + url;
-      window.history.replaceState(null, "", `?id=${id}`);
-    }
-
-    document.getElementById("save").onclick = saveProject;
-
-    function loadProject(id) {
-      const saved = localStorage.getItem("CE_" + id);
-      if (!saved) return;
-      const obj = JSON.parse(saved);
-      document.getElementById("html").value = obj.html;
-      document.getElementById("css").value = obj.css;
-      document.getElementById("js").value = obj.js;
-      runPreview();
-    }
-
-    const urlId = new URLSearchParams(window.location.search).get("id");
-    if (urlId) {
-      document.getElementById("projectId").value = urlId;
-      loadProject(urlId);
-    }
-      // Commands button
+    // Add Commands Convert Button
     const commandsBtn = document.createElement('button');
     commandsBtn.textContent = "Convert to Commands";
     document.querySelector('.sidebar').insertBefore(commandsBtn, document.getElementById('run'));
 
     commandsBtn.onclick = () => {
-      const code = `<html>` + document.getElementById('html').value + `</html>`+
+      const code = `<html>` + document.getElementById('html').value + `</html>` +
                    `
-<style>` + document.getElementById('css').value + `</style>`+
+<style>` + document.getElementById('css').value + `</style>` +
                    `
 <script>` + document.getElementById('js').value + `</script>`;
+
+      document.getElementById('html').value = code;
+      document.getElementById('css').value = "";
+      document.getElementById('js').value = "";
+    };
+
+    function parseCommands(code) {
+      let html = code.match(/<html>([\s\S]*?)<\/html>/)?.[1] || "";
+      let css = code.match(/<style>([\s\S]*?)<\/style>/)?.[1] || "";
+      let js = code.match(/<script>([\s\S]*?)<\/script>/)?.[1] || "";
+
+      html = html
+        .replace(/click=\"(.*?)\"/g, 'onclick="$1"')
+        .replace(/hover=\"(.*?)\"/g, 'onmouseover="$1"')
+        .replace(/leave=\"(.*?)\"/g, 'onmouseout="$1"')
+        .replace(/press=\"(.*?)\"/g, 'onmousedown="$1"')
+        .replace(/release=\"(.*?)\"/g, 'onmouseup="$1"');
+
+      return { html, css, js };
+    }
+
+    document.getElementById("run").onclick = () => {
+      const text = document.getElementById("html").value;
+      if (text.includes('<html>') && text.includes('<style>') && text.includes('<script>')) {
+        const parsed = parseCommands(text);
+        document.getElementById('html').value = parsed.html;
+        document.getElementById('css').value = parsed.css;
+        document.getElementById('js').value = parsed.js;
+      }
+      runPreview();
+    };
+  </script>`;
       document.getElementById('html').value = code;
       document.getElementById('css').value = "";
       document.getElementById('js').value = "";
