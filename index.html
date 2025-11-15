@@ -75,6 +75,50 @@
       document.getElementById("projectId").value = urlId;
       loadProject(urlId);
     }
+      // Commands button
+    const commandsBtn = document.createElement('button');
+    commandsBtn.textContent = "Convert to Commands";
+    document.querySelector('.sidebar').insertBefore(commandsBtn, document.getElementById('run'));
+
+    commandsBtn.onclick = () => {
+      const code = `<html>` + document.getElementById('html').value + `</html>`+
+                   `
+<style>` + document.getElementById('css').value + `</style>`+
+                   `
+<script>` + document.getElementById('js').value + `</script>`;
+      document.getElementById('html').value = code;
+      document.getElementById('css').value = "";
+      document.getElementById('js').value = "";
+    };
+
+    function parseCommands(code) {
+      let html = code.match(/<html>([\s\S]*?)<\/html>/)?.[1] || "";
+      let css = code.match(/<style>([\s\S]*?)<\/style>/)?.[1] || "";
+      let js = code.match(/<script>([\s\S]*?)<\/script>/)?.[1] || "";
+
+      html = html
+        .replace(/click=\"(.*?)\"/g, 'onclick="$1"')
+        .replace(/hover=\"(.*?)\"/g, 'onmouseover="$1"')
+        .replace(/leave=\"(.*?)\"/g, 'onmouseout="$1"')
+        .replace(/press=\"(.*?)\"/g, 'onmousedown="$1"')
+        .replace(/release=\"(.*?)\"/g, 'onmouseup="$1"');
+
+      return { html, css, js };
+    }
+
+    // Detect Commands mode
+    const runButton = document.getElementById('run');
+    runButton.onclick = () => {
+      const text = document.getElementById('html').value;
+      if (text.includes('<html>') && text.includes('<style>') && text.includes('<script>')) {
+        const parsed = parseCommands(text);
+        document.getElementById('html').value = parsed.html;
+        document.getElementById('css').value = parsed.css;
+        document.getElementById('js').value = parsed.js;
+      }
+      runPreview();
+    };
+
   </script>
 </body>
 </html>
