@@ -33,27 +33,31 @@
   <iframe id="preview"></iframe>
 
   <script>
-    function runPreview() {
-      const html = document.getElementById("html").value;
-      const css = `<style>${document.getElementById("css").value}</style>`;
-      const js = `<script>${document.getElementById("js").value}<\/script>`;
-      const frame = document.getElementById("preview").contentWindow.document;
-      frame.open();
-      frame.write(html + css + js);
-      frame.close();
-    }
+// Commands notice
+alert("THIS SCRIPTING LANGUAGE IS 'commands' — A COMBINATION OF HTML, CSS, AND JAVASCRIPT");
 
-    // Add Commands Convert Button
-    const commandsBtn = document.createElement('button');
-    commandsBtn.textContent = "Convert to Commands";
-    document.querySelector('.sidebar').insertBefore(commandsBtn, document.getElementById('run'));
+// Convert Commands → HTML/CSS/JS
+function convertToCommands() {
+    const code = document.getElementById('commands').value;
+    document.getElementById('html').value = code;
+    document.getElementById('css').value = "";
+    document.getElementById('js').value = "";
+}
 
-    commandsBtn.onclick = () => {
-      const code = `<html>` + document.getElementById('html').value + `</html>` +
-                   `
-<style>` + document.getElementById('css').value + `</style>` +
-                   `
-<script>` + document.getElementById('js').value + `</script>`;
+// Run Preview
+function runPreview() {
+    const html = document.getElementById('html').value;
+    const css = document.getElementById('css').value;
+    const js = document.getElementById('js').value;
+    const iframe = document.getElementById('preview');
+
+    const blob = new Blob([
+        `<!DOCTYPE html><html><head><style>${css}</style></head><body>${html}<script>${js}<\/script></body></html>`
+    ], { type: 'text/html' });
+
+    iframe.src = URL.createObjectURL(blob);
+}
+</script>`;
 
       document.getElementById('html').value = code;
       document.getElementById('css').value = "";
