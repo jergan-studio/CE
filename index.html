@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -50,7 +50,7 @@ function runPreview() {
     const iframe = document.getElementById('preview');
 
     const blob = new Blob([
-        `<!DOCTYPE html><html><head><style>${css}</style></head><body>${html}<script>${js}<\\/script></body></html>`
+        `<!DOCTYPE html><html><head><style>${css}</style></head><body>${html}<script>${js}<\/script></body></html>`
     ], { type: 'text/html' });
 
     iframe.src = URL.createObjectURL(blob);
